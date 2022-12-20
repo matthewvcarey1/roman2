@@ -17,10 +17,14 @@ public class IntToRomanConverter {
     public static void main(String args[]){
         try {
             int value = (args.length > 0) ? Integer.parseInt(args[0]) : 2904;
+            if (value <= 0){
+                System.out.println("Expected a valid positive integer greater than 0, as an input parameter");
+                return;
+            }
             IntToRomanConverter converter = new IntToRomanConverter();
             System.out.println(converter.convert(value));
         } catch (Exception e){
-            System.out.println("Expected a valid integer as an input parameter");
+            System.out.println("Expected a valid positive integer greater than 0, as an input parameter");
         }
     }
 
