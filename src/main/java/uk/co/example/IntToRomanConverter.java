@@ -14,35 +14,31 @@ public class IntToRomanConverter {
         romanValues[0] = new RomanValue(1000, 'M', romanValues[2]);
     }
 
+    private static final String message = "Expected a valid positive integer greater than 0, as an input parameter";
     public static void main(String args[]){
         try {
-            int value = (args.length > 0) ? Integer.parseInt(args[0]) : 2904;
+            final int value = (args.length > 0) ? Integer.parseInt(args[0]) : 0;
             if (value <= 0){
-                System.out.println("Expected a valid positive integer greater than 0, as an input parameter");
+                System.out.println(message);
                 return;
             }
             IntToRomanConverter converter = new IntToRomanConverter();
             System.out.println(converter.convert(value));
         } catch (Exception e){
-            System.out.println("Expected a valid positive integer greater than 0, as an input parameter");
+            System.out.println(message);
         }
     }
 
     private int resolveRomanValues(int decimalValue, RomanValue rv, StringBuffer result){
-        int prefixSubtract = rv.getPrefixSubtractValue() != null? rv.getPrefixSubtractValue().getDecimal() : 0;
+        final int prefixSubtract = rv.getPrefixSubtractValue() != null? rv.getPrefixSubtractValue().getDecimal() : 0;
         Stack<Integer> stack = new Stack<>();
         stack.push(decimalValue);
         while (stack.peek() >= rv.getDecimal() - prefixSubtract){
-            int dv = stack.pop();
-            if (dv >= rv.getDecimal()){
-                stack.push(dv - rv.getDecimal());
-                result.append(rv.getRoman());
-            }
-            else{
-                stack.push(dv - (rv.getDecimal() - prefixSubtract));
-                result.append(rv.getPrefixSubtractValue().getRoman());
-                result.append(rv.getRoman());
-            }
+            final int dv = stack.pop();
+            final int reduction = dv < rv.getDecimal() ? prefixSubtract : 0;
+            stack.push(dv - (rv.getDecimal() - reduction));
+            if(reduction > 0) result.append(rv.getPrefixSubtractValue().getRoman());
+            result.append(rv.getRoman());
         }
         return stack.pop();
     }
@@ -53,7 +49,7 @@ public class IntToRomanConverter {
         Stack<Integer> stack = new Stack<>();
         stack.push(decimal);
         for (RomanValue v : romanValues ) {
-            int d = stack.pop();
+            final int d = stack.pop();
             stack.push(resolveRomanValues(d,v,result));
         }
         return result.toString();
